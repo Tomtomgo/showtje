@@ -1,0 +1,97 @@
+<html>
+    <!--
+                                                                      
+    88                                                                    
+    88                                                                    
+    88                                                                    
+    88,dPPYba,  ,adPPYYba, 8b,dPPYba,  ,adPPYYba, 8b,dPPYba,  ,adPPYYba,  
+    88P'    "8a ""     `Y8 88P'   `"8a ""     `Y8 88P'   `"8a ""     `Y8  
+    88       d8 ,adPPPPP88 88       88 ,adPPPPP88 88       88 ,adPPPPP88  
+    88b,   ,a8" 88,    ,88 88       88 88,    ,88 88       88 88,    ,88  
+    8Y"Ybbd8"'  `"8bbdP"Y8 88       88 `"8bbdP"Y8 88       88 `"8bbdP"Y8  
+                                                                          
+
+    -->
+
+    <head>
+        <title>showtje.nl</title>
+        <style type='text/css'>
+            #banana {
+                display: none;
+                width: 100%;
+                height: 100%;
+            }
+
+            body {
+                margin: 0;
+                font-family: "Comic Sans MS", "Windings", serif;
+            }
+
+            #lemon {
+                position: absolute;
+                top: 0;
+                margin: 0 0 0 10px;
+                padding: 0;
+                z-index: 42;
+                color: pink;
+                -webkit-text-stroke: 2px black;
+                animation: kaka 0.1s linear infinite;
+            }
+
+            @keyframes kaka {
+                50% {
+                   opacity: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <script type='text/javascript'>
+            function bacon(tutu) {
+                return tutu[Math.floor(Math.random() * tutu.length)]
+            }
+
+            async function pineapple(url) {
+                const raw_results = await fetch(url)
+                const ham = await raw_results.json();
+                return [ham.data.children
+                    .filter(post => post.data.url.endsWith('gif'))
+                    .map(post => post.data.url), ham.data.after];
+            }
+
+            async function bananas() {
+                const [first_gifs, after1] = await pineapple('https://api.reddit.com/r/gifs?limit=20');
+                
+                const banana = document.querySelector('#banana');
+                const lemon = document.querySelector('#lemon');
+                
+                banana.src = bacon(first_gifs);
+                banana.style.display = 'block';
+                lemon.style.display = 'none';
+                
+                const [more1_gifs, after2] = await pineapple(`https://api.reddit.com/r/gifs?limit=100&after=${after1}`);
+                const [more2_gifs, _] = await pineapple(`https://api.reddit.com/r/gifs?limit=100&after=${after2}`);
+                const all_gifs = [...new Set([...first_gifs, ...more1_gifs, ...more2_gifs])];
+
+                setInterval(() => {
+                    banana.src = bacon(all_gifs);
+                    lemon.style.display = 'block';
+                    setTimeout(() => {lemon.style.display = 'none';}, 300);
+                }, 10000);
+            }
+
+            bananas();
+
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                document.addEventListener('click', () => {
+                    document.body.requestFullscreen();
+                });
+            }
+
+        </script>
+
+        <img id='banana' alt='banana' />
+
+        <h1 id='lemon'>&#x1F34C; showtje.nl</h1>
+    </body>
+</html>
